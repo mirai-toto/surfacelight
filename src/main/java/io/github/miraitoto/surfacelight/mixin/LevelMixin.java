@@ -1,6 +1,6 @@
 package io.github.miraitoto.surfacelight.mixin;
 
-import com.llamalad7.mixinextras.injection.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.miraitoto.surfacelight.LightRules;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
