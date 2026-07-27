@@ -44,4 +44,4 @@ See **[DESIGN.md](DESIGN.md)** for the 1.21.11 lighting pipeline this is built o
 
 ## License
 
-[CC0-1.0](LICENSE) (from the Fabric example-mod template — replace if you want another license).
+[MIT](LICENSE).
