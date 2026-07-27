@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "surfacelight",
+	"version": "${version}",
+	"name": "Surface Light",
+	"description": "Surface light that follows the world: moon phases, weather, advancements and your own settings.",
+	"authors": [
+		"mirai-toto"
+	],
+	"contact": {
+		"sources": "https://github.com/mirai-toto/surfacelight"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/surfacelight/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.miraitoto.surfacelight.SurfaceLight"
+		],
+		"client": [
+			"io.github.miraitoto.surfacelight.client.SurfaceLightClient"
+		]
+	},
+	"mixins": [
+		"surfacelight.mixins.json",
+		{
+			"config": "surfacelight.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

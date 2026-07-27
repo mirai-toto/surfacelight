@@ -1,0 +1,138 @@
+{
+	"period_ticks": 192000,
+	"tracks": {
+		"minecraft:gameplay/sky_light_level": {
+			"keyframes": [
+				{
+					"ticks": 133,
+					"value": 1.0
+				},
+				{
+					"ticks": 11867,
+					"value": 1.0
+				},
+				{
+					"ticks": 13670,
+					"value": 1.5
+				},
+				{
+					"ticks": 22330,
+					"value": 1.5
+				},
+				{
+					"ticks": 24133,
+					"value": 1.0
+				},
+				{
+					"ticks": 35867,
+					"value": 1.0
+				},
+				{
+					"ticks": 37670,
+					"value": 1.25
+				},
+				{
+					"ticks": 46330,
+					"value": 1.25
+				},
+				{
+					"ticks": 48133,
+					"value": 1.0
+				},
+				{
+					"ticks": 59867,
+					"value": 1.0
+				},
+				{
+					"ticks": 61670,
+					"value": 1.0
+				},
+				{
+					"ticks": 70330,
+					"value": 1.0
+				},
+				{
+					"ticks": 72133,
+					"value": 1.0
+				},
+				{
+					"ticks": 83867,
+					"value": 1.0
+				},
+				{
+					"ticks": 85670,
+					"value": 0.75
+				},
+				{
+					"ticks": 94330,
+					"value": 0.75
+				},
+				{
+					"ticks": 96133,
+					"value": 1.0
+				},
+				{
+					"ticks": 107867,
+					"value": 1.0
+				},
+				{
+					"ticks": 109670,
+					"value": 0.5
+				},
+				{
+					"ticks": 118330,
+					"value": 0.5
+				},
+				{
+					"ticks": 120133,
+					"value": 1.0
+				},
+				{
+					"ticks": 131867,
+					"value": 1.0
+				},
+				{
+					"ticks": 133670,
+					"value": 0.75
+				},
+				{
+					"ticks": 142330,
+					"value": 0.75
+				},
+				{
+					"ticks": 144133,
+					"value": 1.0
+				},
+				{
+					"ticks": 155867,
+					"value": 1.0
+				},
+				{
+					"ticks": 157670,
+					"value": 1.0
+				},
+				{
+					"ticks": 166330,
+					"value": 1.0
+				},
+				{
+					"ticks": 168133,
+					"value": 1.0
+				},
+				{
+					"ticks": 179867,
+					"value": 1.0
+				},
+				{
+					"ticks": 181670,
+					"value": 1.25
+				},
+				{
+					"ticks": 190330,
+					"value": 1.25
+				}
+			],
+			"modifier": "multiply"
+		}
+	}
+}
