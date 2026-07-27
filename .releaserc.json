@@ -1,0 +1,18 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/exec", {
+      "prepareCmd": "./gradlew build -Pmod_version=${nextRelease.version} --stacktrace"
+    }],
+    ["@semantic-release/github", {
+      "assets": [
+        {
+          "path": ["build/libs/surfacelight-*.jar", "!build/libs/surfacelight-*-sources.jar"],
+          "label": "Fabric mod (jar)"
+        }
+      ]
+    }]
+  ]
+}
