@@ -10,7 +10,7 @@
 	"contact": {
 		"sources": "https://github.com/mirai-toto/surfacelight"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/surfacelight/icon.png",
 	"environment": "*",
 	"entrypoints": {
