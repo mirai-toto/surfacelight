@@ -3,7 +3,7 @@
 	"id": "surfacelight",
 	"version": "${version}",
 	"name": "Surface Light",
-	"description": "Surface light that follows the world: moon phases, weather, advancements and your own settings.",
+	"description": "Surface Light is a Fabric mod that varies night-time sky light by moon phase.",
 	"authors": [
 		"mirai-toto"
 	],

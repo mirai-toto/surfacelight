@@ -1,46 +1,57 @@
 # Surface Light
 
-A Fabric mod for Minecraft **1.21.11**: surface (sky) light that follows the world.
+Surface Light is a Fabric mod that varies night-time sky light by moon phase.
 
-For now that means **moonlight**. Nights get brighter or darker with the moon phase, plus a small dynamic layer for things data can't express (currently extra darkness during night thunderstorms). Weather, advancements and an in-game settings screen are on the roadmap.
+Nights get brighter or darker with the moon: a full moon lights the surface, a new moon leaves it dark. Because that changes the effective sky light, it also decides whether hostile mobs spawn on the surface. Everything is configurable in-game (Mod Menu + Cloth Config), with ready-made presets plus a weather rule that darkens night thunderstorms.
 
-Night surface light by phase: **full 6, gibbous 5, quarter 4 (vanilla), crescent 3, new 2**. Days are untouched.
+## Presets
+
+Pick a rule set in the config screen, or choose Custom and set each phase yourself:
+
+- **Safe Nights**: every phase is bright enough (>=8) that no hostiles spawn on the surface.
+- **Full Moon Respite**: only the full moon is safe; nights darken to a pitch-black new moon.
+- **New Moon Prowl**: every night is safe except the new moon.
+- **Vanilla**: unchanged vanilla night light.
+- **Custom**: eight per-phase sliders (0-15).
+
+Spawn note: the overworld rolls a random 0-7 and spawns a mob when the light is `<=` that roll, so **sky light 8 or above is the "no surface spawns" line**. The sliders flag this live (green at 8+, red below).
 
 ## Requirements
 
-- JDK 21 (Temurin works well)
-- Gradle comes with the wrapper, no separate install
+- Minecraft 1.21.11 (Fabric) + Fabric API
+- Optional, for the config screen: Mod Menu + Cloth Config
 
-The first build downloads Minecraft, mappings and Fabric from Mojang/FabricMC. Behind a corporate proxy (e.g. Zscaler), set `systemProp.https.proxyHost/Port` in `~/.gradle/gradle.properties`.
+## In-game
 
-## Build & run
+`/surfacelight light` prints the raw sky/block, effective light, and current moon phase at your feet. The effective value is the one mob spawning uses; F3's sky number stays 15 outdoors and won't reflect the moon.
 
-```bash
-./gradlew runClient   # dev client with the mod loaded
-./gradlew build       # mod jar in build/libs/
-./gradlew genSources  # decompiled, Mojang-mapped Minecraft sources for browsing
+```
+/time set night     # jump to night
+/time add 24000     # advance one day = next moon phase
+/weather thunder    # exercise the thunderstorm rule
 ```
 
 ## Config
 
-`config/surfacelight.json` (created on first run):
+Edit via the Mod Menu screen, or by hand in `config/surfacelight.json`:
 
-- `dynamicLayer`: master switch for the code-driven layer
-- `thunderExtraDarken`: extra sky darkness during a night thunderstorm
+- `enabled`: master switch; off = vanilla sky light
+- `preset`: `SAFE_NIGHTS`, `FULL_MOON_RESPITE`, `NEW_MOON_PROWL`, `VANILLA`, or `CUSTOM`
+- `moonPhaseLight`: eight per-phase levels used when preset is `CUSTOM` (index 0 = full ... 4 = new)
+- `thunderDarken`: extra darkness during a night thunderstorm
 
-## Testing in game
+## Build
 
+```bash
+./gradlew runClient   # dev client with the mod loaded
+./gradlew build       # mod jar in build/libs/
 ```
-/time set night     # jump to night
-/time add 24000     # advance a day = next moon phase
-/weather thunder    # exercise the dynamic layer
-```
 
-F3 shows the "Client Light" sky value at your feet. Hostile spawns follow it (`monster_spawn_light_level` is 0-7 in the overworld).
+The first build downloads Minecraft, mappings and Fabric from Mojang/FabricMC.
 
-## How it works & roadmap
+## How it works
 
-See **[DESIGN.md](DESIGN.md)** for the 1.21.11 lighting pipeline this is built on, the full feature map, and the multi-version strategy.
+See **[DESIGN.md](DESIGN.md)** for the 1.21.11 lighting pipeline this builds on.
 
 ## License
 
