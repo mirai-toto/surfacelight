@@ -1,6 +1,7 @@
 package io.github.miraitoto.surfacelight;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,8 @@ public class SurfaceLight implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		SurfaceLightConfig.load();
-		LOGGER.info("Surface Light loaded (dynamic layer: {})", SurfaceLightConfig.get().dynamicLayer ? "on" : "off");
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+				SurfaceLightCommand.register(dispatcher));
+		LOGGER.info("Surface Light loaded (enabled: {})", SurfaceLightConfig.get().enabled ? "yes" : "no");
 	}
 }

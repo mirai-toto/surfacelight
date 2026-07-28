@@ -19,6 +19,9 @@
 		],
 		"client": [
 			"io.github.miraitoto.surfacelight.client.SurfaceLightClient"
+		],
+		"modmenu": [
+			"io.github.miraitoto.surfacelight.client.SurfaceLightModMenu"
 		]
 	},
 	"mixins": [
@@ -33,5 +36,9 @@
 		"minecraft": "~1.21.11",
 		"java": ">=21",
 		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*",
+		"cloth-config": "*"
 	}
 }

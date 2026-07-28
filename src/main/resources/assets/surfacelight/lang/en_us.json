@@ -1,0 +1,33 @@
+{
+	"surfacelight.config.title": "Surface Light",
+
+	"surfacelight.config.category.general": "General",
+	"surfacelight.config.enabled": "Enable Surface Light",
+	"surfacelight.config.enabled.tooltip": "Master switch. When off, sky light is completely vanilla.",
+
+	"surfacelight.config.category.moon": "Moon phases",
+	"surfacelight.config.currentPhase": "Current moon phase: %s (index %s)",
+	"surfacelight.config.currentPhase.unknown": "Current moon phase: join a world to see it",
+	"surfacelight.config.preset": "Preset",
+	"surfacelight.config.preset.tooltip": "A ready-made set of per-phase night light levels. Choose Custom to set each phase yourself with the sliders below.",
+	"surfacelight.config.preset.safe_nights": "Safe Nights (no spawns)",
+	"surfacelight.config.preset.full_moon_respite": "Full Moon Respite (only full is safe)",
+	"surfacelight.config.preset.new_moon_prowl": "New Moon Prowl (only new spawns)",
+	"surfacelight.config.preset.vanilla": "Vanilla",
+	"surfacelight.config.preset.custom": "Custom",
+	"surfacelight.config.moon.tooltip": "Night sky light level for this moon phase. 0 = darkest, 15 = full daylight. Vanilla is 4. At 8+ no mobs spawn on the surface.",
+	"surfacelight.config.moon.value.safe": "%s — no spawns",
+	"surfacelight.config.moon.value.spawn": "%s — mobs spawn",
+	"surfacelight.config.moon.full": "Full moon",
+	"surfacelight.config.moon.waning_gibbous": "Waning gibbous",
+	"surfacelight.config.moon.third_quarter": "Third quarter",
+	"surfacelight.config.moon.waning_crescent": "Waning crescent",
+	"surfacelight.config.moon.new": "New moon",
+	"surfacelight.config.moon.waxing_crescent": "Waxing crescent",
+	"surfacelight.config.moon.first_quarter": "First quarter",
+	"surfacelight.config.moon.waxing_gibbous": "Waxing gibbous",
+
+	"surfacelight.config.category.weather": "Weather",
+	"surfacelight.config.thunder": "Thunderstorm darkness",
+	"surfacelight.config.thunder.tooltip": "Extra darkness during a night thunderstorm. 0 = off."
+}
