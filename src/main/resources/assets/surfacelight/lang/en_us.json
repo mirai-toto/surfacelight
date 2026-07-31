@@ -17,6 +17,7 @@
 	"surfacelight.config.preset.vanilla": "Vanilla",
 	"surfacelight.config.preset.custom": "Custom",
 	"surfacelight.config.moon.tooltip": "Night sky light level for this moon phase. 0 = darkest, 15 = full daylight. Vanilla is 4. At 8+ no mobs spawn on the surface.",
+	"surfacelight.config.moon.preset.tooltip": "This preset's fixed level for this phase. Choose the Custom preset to edit the phases yourself.",
 	"surfacelight.config.moon.value.safe": "%s — no spawns",
 	"surfacelight.config.moon.value.spawn": "%s — mobs spawn",
 	"surfacelight.config.moon.full": "Full moon",

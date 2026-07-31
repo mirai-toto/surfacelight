@@ -111,7 +111,7 @@ public final class SurfaceLightConfigScreen {
 		EnumListEntry<MoonPreset> presetEntry = lockIf(readOnly, presetBuilder).build();
 		moon.addEntry(presetEntry);
 
-		// The manual sliders only make sense for CUSTOM, so hide them otherwise.
+		// Editable sliders: the user's own per-phase levels, shown only for CUSTOM.
 		Requirement customSelected = Requirement.isValue(presetEntry, MoonPreset.CUSTOM);
 		for (int i = 0; i < PHASE_KEYS.length; i++) {
 			final int phase = i;
@@ -124,6 +124,28 @@ public final class SurfaceLightConfigScreen {
 					.setSaveConsumer(value -> config.moonPhaseLight[phase] = value)
 					.setDisplayRequirement(customSelected);
 			moon.addEntry(lockIf(readOnly, sliderEntry).build());
+		}
+
+		// For each named preset, a matching row of read-only sliders that reveal its fixed
+		// levels. Only the selected preset's row shows, and it updates live as the dropdown
+		// changes (display requirements are polled), so you can preview any preset's phases.
+		for (MoonPreset preset : MoonPreset.values()) {
+			if (preset == MoonPreset.CUSTOM) {
+				continue;
+			}
+			Requirement presetSelected = Requirement.isValue(presetEntry, preset);
+			int[] levels = preset.levels();
+			for (int i = 0; i < PHASE_KEYS.length; i++) {
+				moon.addEntry(entry
+						.startIntSlider(Component.translatable("surfacelight.config.moon." + PHASE_KEYS[i]),
+								levels[i], 0, 15)
+						.setTextGetter(SurfaceLightConfigScreen::phaseSliderLabel)
+						.setTooltip(Component.translatable("surfacelight.config.moon.preset.tooltip"))
+						.setDefaultValue(levels[i])
+						.setRequirement(NEVER)
+						.setDisplayRequirement(presetSelected)
+						.build());
+			}
 		}
 
 		ConfigCategory weather = builder.getOrCreateCategory(
