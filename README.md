@@ -8,7 +8,7 @@ Nights get brighter or darker with the moon: a full moon lights the surface, a n
 
 Pick a rule set in the config screen, or choose Custom and set each phase yourself:
 
-- **Safe Nights**: every phase is bright enough (>=8) that no hostiles spawn on the surface.
+- **Safe Nights**: every phase is full daylight brightness (15), so no hostiles spawn on the surface.
 - **Full Moon Respite**: only the full moon is safe; nights darken to a pitch-black new moon.
 - **New Moon Prowl**: every night is safe except the new moon.
 - **Vanilla**: unchanged vanilla night light.

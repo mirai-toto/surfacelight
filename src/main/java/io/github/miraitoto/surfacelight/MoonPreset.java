@@ -8,11 +8,11 @@ package io.github.miraitoto.surfacelight;
  *
  * <p>Spawn note: the overworld spawns hostiles when the effective light is {@code <=} a
  * random 0..7, so a level of 8+ blocks surface spawns entirely. {@link #SAFE_NIGHTS}
- * floors every phase at 8 for that reason.
+ * uses full daylight brightness on every phase for that reason.
  */
 public enum MoonPreset {
-	/** Moon-scaled brightness with every phase >= 8: no hostile surface spawns, any night. */
-	SAFE_NIGHTS(new int[] {12, 11, 10, 9, 8, 9, 10, 11}),
+	/** Full daylight brightness every phase: no hostile surface spawns, any night. */
+	SAFE_NIGHTS(new int[] {15, 15, 15, 15, 15, 15, 15, 15}),
 	/** Only the full moon is safe (>= 8); nights darken to a pitch-black new moon. */
 	FULL_MOON_RESPITE(new int[] {8, 6, 4, 2, 0, 2, 4, 6}),
 	/** Every phase safe (>= 8) except the new moon, which goes dark and spawns mobs. */
