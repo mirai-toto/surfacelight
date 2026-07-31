@@ -25,7 +25,11 @@ public final class LightRules {
 	}
 
 	public static int modifySkyDarken(Level level, int original) {
-		SurfaceLightConfig config = SurfaceLightConfig.get();
+		// The client renders from the server's synced config (if remote); the server and
+		// singleplayer both read the authoritative local config.
+		SurfaceLightConfig config = level.isClientSide()
+				? SurfaceLightConfig.getForRender()
+				: SurfaceLightConfig.get();
 		if (!config.enabled || original < NIGHT_THRESHOLD) {
 			return original;
 		}

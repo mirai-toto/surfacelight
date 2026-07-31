@@ -3,15 +3,18 @@ package io.github.miraitoto.surfacelight.client;
 import io.github.miraitoto.surfacelight.LightRules;
 import io.github.miraitoto.surfacelight.MoonPreset;
 import io.github.miraitoto.surfacelight.SurfaceLightConfig;
+import io.github.miraitoto.surfacelight.network.SurfaceLightServerNetworking;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.api.Requirement;
 import me.shedaniel.clothconfig2.gui.entries.EnumListEntry;
+import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 
 /**
@@ -32,7 +35,19 @@ public final class SurfaceLightConfigScreen {
 	/** At or above this sky-light level the 0-7 spawn roll can never succeed: no surface spawns. */
 	private static final int SPAWN_SAFE_LIGHT = 8;
 
+	/** A requirement that is never met, used to lock entries when the server controls the config. */
+	private static final Requirement NEVER = () -> false;
+
 	private SurfaceLightConfigScreen() {
+	}
+
+	/** Persist the edited config, then re-sync it to any LAN guests if this world is hosted. */
+	private static void save() {
+		SurfaceLightConfig.save();
+		MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
+		if (server != null) {
+			server.execute(() -> SurfaceLightServerNetworking.broadcast(server));
+		}
 	}
 
 	/** Slider value label: the light level plus a live green/red spawn verdict. */
@@ -55,63 +70,79 @@ public final class SurfaceLightConfigScreen {
 	}
 
 	public static Screen create(Screen parent) {
-		SurfaceLightConfig config = SurfaceLightConfig.get();
+		// On a remote server the config is server-controlled: show its synced values, locked.
+		boolean readOnly = SurfaceLightConfig.isServerControlled();
+		SurfaceLightConfig config = readOnly ? SurfaceLightConfig.getForRender() : SurfaceLightConfig.get();
 
 		ConfigBuilder builder = ConfigBuilder.create()
 				.setParentScreen(parent)
 				.setTitle(Component.translatable("surfacelight.config.title"))
-				.setSavingRunnable(SurfaceLightConfig::save);
+				// Read-only mode persists nothing: the values shown are the server's, not local config.
+				.setSavingRunnable(readOnly ? () -> {} : SurfaceLightConfigScreen::save);
 
 		ConfigEntryBuilder entry = builder.entryBuilder();
 
 		ConfigCategory general = builder.getOrCreateCategory(
 				Component.translatable("surfacelight.config.category.general"));
-		general.addEntry(entry
+		if (readOnly) {
+			general.addEntry(entry.startTextDescription(
+					Component.translatable("surfacelight.config.serverControlled")
+							.withStyle(ChatFormatting.YELLOW)).build());
+		}
+		var enabledEntry = entry
 				.startBooleanToggle(Component.translatable("surfacelight.config.enabled"), config.enabled)
 				.setTooltip(Component.translatable("surfacelight.config.enabled.tooltip"))
 				.setDefaultValue(true)
-				.setSaveConsumer(value -> config.enabled = value)
-				.build());
+				.setSaveConsumer(value -> config.enabled = value);
+		general.addEntry(lockIf(readOnly, enabledEntry).build());
 
 		ConfigCategory moon = builder.getOrCreateCategory(
 				Component.translatable("surfacelight.config.category.moon"));
 
 		moon.addEntry(entry.startTextDescription(currentPhaseText()).build());
 
-		EnumListEntry<MoonPreset> presetEntry = entry
+		var presetBuilder = entry
 				.startEnumSelector(Component.translatable("surfacelight.config.preset"),
 						MoonPreset.class, config.preset)
 				.setEnumNameProvider(value -> Component.translatable(((MoonPreset) value).langKey()))
 				.setTooltip(Component.translatable("surfacelight.config.preset.tooltip"))
 				.setDefaultValue(MoonPreset.CUSTOM)
-				.setSaveConsumer(value -> config.preset = value)
-				.build();
+				.setSaveConsumer(value -> config.preset = value);
+		EnumListEntry<MoonPreset> presetEntry = lockIf(readOnly, presetBuilder).build();
 		moon.addEntry(presetEntry);
 
 		// The manual sliders only make sense for CUSTOM, so hide them otherwise.
 		Requirement customSelected = Requirement.isValue(presetEntry, MoonPreset.CUSTOM);
 		for (int i = 0; i < PHASE_KEYS.length; i++) {
 			final int phase = i;
-			moon.addEntry(entry
+			var sliderEntry = entry
 					.startIntSlider(Component.translatable("surfacelight.config.moon." + PHASE_KEYS[i]),
 							config.moonPhaseLight[phase], 0, 15)
 					.setTextGetter(SurfaceLightConfigScreen::phaseSliderLabel)
 					.setTooltip(Component.translatable("surfacelight.config.moon.tooltip"))
 					.setDefaultValue(PHASE_DEFAULTS[phase])
 					.setSaveConsumer(value -> config.moonPhaseLight[phase] = value)
-					.setDisplayRequirement(customSelected)
-					.build());
+					.setDisplayRequirement(customSelected);
+			moon.addEntry(lockIf(readOnly, sliderEntry).build());
 		}
 
 		ConfigCategory weather = builder.getOrCreateCategory(
 				Component.translatable("surfacelight.config.category.weather"));
-		weather.addEntry(entry
+		var thunderEntry = entry
 				.startIntSlider(Component.translatable("surfacelight.config.thunder"), config.thunderDarken, 0, 15)
 				.setTooltip(Component.translatable("surfacelight.config.thunder.tooltip"))
 				.setDefaultValue(1)
-				.setSaveConsumer(value -> config.thunderDarken = value)
-				.build());
+				.setSaveConsumer(value -> config.thunderDarken = value);
+		weather.addEntry(lockIf(readOnly, thunderEntry).build());
 
 		return builder.build();
+	}
+
+	/** Disable an entry (greyed, non-editable) when the server controls the config. */
+	private static <B extends FieldBuilder<?, ?, B>> B lockIf(boolean readOnly, B builder) {
+		if (readOnly) {
+			builder.setRequirement(NEVER);
+		}
+		return builder;
 	}
 }

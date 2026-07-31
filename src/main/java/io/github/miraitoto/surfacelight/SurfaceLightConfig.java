@@ -16,6 +16,11 @@ import java.nio.file.Path;
  * <p>Moon lighting is code-driven ({@link LightRules}): a {@link MoonPreset} chooses the
  * per-phase night light levels, and {@link MoonPreset#CUSTOM} falls back to the eight
  * {@link #moonPhaseLight} sliders.
+ *
+ * <p>On a client connected to a <em>remote</em> server, {@link #clientOverride} holds the
+ * server's synced config so rendering matches the rules the server actually enforces; see
+ * {@link #getForRender()}. It stays {@code null} in singleplayer and on the server, where
+ * {@link #get()} is already authoritative.
  */
 public final class SurfaceLightConfig {
 	/** Master switch. When off, sky light is left completely vanilla. */
@@ -46,11 +51,53 @@ public final class SurfaceLightConfig {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static SurfaceLightConfig instance;
 
+	/** Server config synced to this client over a remote connection; null otherwise. */
+	private static volatile SurfaceLightConfig clientOverride;
+
 	public static SurfaceLightConfig get() {
 		if (instance == null) {
 			load();
 		}
 		return instance;
+	}
+
+	/**
+	 * The config the client should render from: the remote server's synced copy when present,
+	 * otherwise the local one. On the server and in singleplayer this is just {@link #get()}.
+	 */
+	public static SurfaceLightConfig getForRender() {
+		SurfaceLightConfig override = clientOverride;
+		return override != null ? override : get();
+	}
+
+	/** Install (or replace) the server's synced config on this client. */
+	public static void setClientOverride(SurfaceLightConfig config) {
+		clientOverride = config;
+	}
+
+	/** Drop the server override, e.g. on disconnect, so local config takes over again. */
+	public static void clearClientOverride() {
+		clientOverride = null;
+	}
+
+	/** True when a remote server is dictating the config, so the client GUI should be read-only. */
+	public static boolean isServerControlled() {
+		return clientOverride != null;
+	}
+
+	/** Serialize the live config to the on-disk JSON form, for network sync. */
+	public static String toJson() {
+		return GSON.toJson(get());
+	}
+
+	/** Parse a synced payload into a validated, standalone instance (never the singleton). */
+	public static SurfaceLightConfig fromJson(String json) {
+		SurfaceLightConfig config = GSON.fromJson(json, SurfaceLightConfig.class);
+		if (config == null) {
+			config = new SurfaceLightConfig();
+		}
+		config.validate();
+		return config;
 	}
 
 	public static void load() {
@@ -66,11 +113,16 @@ public final class SurfaceLightConfig {
 			instance = new SurfaceLightConfig();
 			save();
 		}
-		if (instance.moonPhaseLight == null || instance.moonPhaseLight.length != 8) {
-			instance.moonPhaseLight = defaultMoonPhaseLight();
+		instance.validate();
+	}
+
+	/** Repair fields that a hand-edited or synced JSON may have left invalid. */
+	private void validate() {
+		if (moonPhaseLight == null || moonPhaseLight.length != 8) {
+			moonPhaseLight = defaultMoonPhaseLight();
 		}
-		if (instance.preset == null) {
-			instance.preset = MoonPreset.CUSTOM;
+		if (preset == null) {
+			preset = MoonPreset.CUSTOM;
 		}
 	}
 

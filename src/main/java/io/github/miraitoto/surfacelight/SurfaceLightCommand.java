@@ -1,10 +1,12 @@
 package io.github.miraitoto.surfacelight;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.miraitoto.surfacelight.network.SurfaceLightServerNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LightLayer;
 
@@ -23,7 +25,20 @@ public final class SurfaceLightCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(Commands.literal("surfacelight")
 				.then(Commands.literal("light")
-						.executes(ctx -> reportLight(ctx.getSource()))));
+						.executes(ctx -> reportLight(ctx.getSource())))
+				.then(Commands.literal("reload")
+						.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+						.executes(ctx -> reload(ctx.getSource()))));
+	}
+
+	/** Reload the config from disk and re-sync it to every connected player. */
+	private static int reload(CommandSourceStack source) {
+		SurfaceLightConfig.load();
+		MinecraftServer server = source.getServer();
+		SurfaceLightServerNetworking.broadcast(server);
+		source.sendSuccess(() -> Component.literal(
+				"Surface Light config reloaded and synced to players."), true);
+		return 1;
 	}
 
 	private static int reportLight(CommandSourceStack source) {

@@ -1,5 +1,6 @@
 {
 	"surfacelight.config.title": "Surface Light",
+	"surfacelight.config.serverControlled": "Controlled by the server: these values are read-only while you are connected.",
 
 	"surfacelight.config.category.general": "General",
 	"surfacelight.config.enabled": "Enable Surface Light",
